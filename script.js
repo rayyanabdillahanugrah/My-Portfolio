@@ -30,10 +30,10 @@ const portfolioData = [
     desc: "Pada tanggal 14 Desember 2024, saya meraih juara kedua di acara GEM FEST 2.0 Yaspia Al 'Imaroh kategori Musabaqah Hifdzil Qur'an (MHQ)."
   },
   {
-    title: "Peserta FLS3NFG 2026",
-    img: "porto6-optimal.jpg",
+    title: "Juara Harapan 2 FLS3NFG 2026",
+    img: "porto6.jpg",
     imgFallback: "https://picsum.photos/seed/porto6/800/450",
-    desc: "Saya mewakili sekolah dalam lomba FLS3N 2026 jenjang SMA dalam bidang fotografi yang diselenggarakan Pusat Prestasi Nasional (Puspresnas)."
+    desc: "Saya berhasil meraih juara harapan 3 dalam lomba FLS3N 2026 jenjang SMA bidang fotografi yang diselenggarakan Pusat Prestasi Nasional (Puspresnas)."
   }
 ];
 
