@@ -33,7 +33,7 @@ const portfolioData = [
     title: "Juara Harapan 2 FLS3NFG 2026",
     img: "porto6.jpg",
     imgFallback: "https://picsum.photos/seed/porto6/800/450",
-    desc: "Saya berhasil meraih juara harapan 3 dalam lomba FLS3N 2026 jenjang SMA bidang fotografi yang diselenggarakan Pusat Prestasi Nasional (Puspresnas)."
+    desc: "Saya berhasil meraih juara harapan 2 dalam lomba FLS3N 2026 jenjang SMA bidang fotografi yang diselenggarakan Pusat Prestasi Nasional (Puspresnas)."
   }
 ];
 
