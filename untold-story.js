@@ -71,10 +71,10 @@ const stories = [
     content: `
     <p class="justify">Aku pernah menulis sebuah puisi di atas secarik kertas lusuh untuk sosok terindah dalam hidupku. Ia adalah sekuntum bunga di tengah jalang padang rumput. Pancaran matanya sejernih kristal, mentalnya kuat laksana baja, kalbunya luas bagaikan lautan; sangat terbuka lagi memberi ketenangan bagi setiap insan yang melihatnya.</p>
     <p class="justify">Namun, kepergiannya membuatku terpukul hingga larut tenggelam dalam isak air mata. Aku merasa ditusuk oleh pedang yang dilumuri rasa sesak. Lalu pedang itu dicabut, meninggalkan luka sedalam palung, dan angin-angin dingin menerpa luka pedang itu.</p>
-    <p class="justify">Sudahlah... Aku sudah mampu lagi. Teruntuknya, nan selalu menemani di tengah segala riuhku. Puisi ini kupersembahkan untukmu:</p>
+    <p class="justify">Sudahlah... Aku sudah tak mampu lagi. Teruntuknya, nan selalu menemani di tengah segala riuhku. Puisi ini kupersembahkan untukmu:</p>
     <p class="italic"><b>Seribu Cerita Ibu</b></p>
     <p class="italic" class="line">Hidup seperti panglima perang</p>
-    <p class="italic" class="line">Siap sedia menghadapi masalah yang datang</p>
+    <p class="italic" class="line">Siap sedia menghadapi rintangan yang datang</p>
     <p class="italic" class="line">Kesabarannya kokoh, wawasannya tajam</p>
     <p class="italic" class="line">Selalu siaga pada waktu pagi dan malam</p>
     <p class="italic" class="line">Tiga ribu malaikat mendoakan namanya</p>
