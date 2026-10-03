@@ -73,18 +73,18 @@ const stories = [
     <p class="justify">Namun, kepergiannya membuatku terpukul hingga larut tenggelam dalam isak air mata. Aku merasa ditusuk oleh pedang yang dilumuri rasa sesak. Lalu pedang itu dicabut, meninggalkan luka sedalam palung, dan angin-angin dingin menerpa luka pedang itu.</p>
     <p class="justify">Sudahlah... Aku tak mau membahasnya lebih jauh. Teruntuknya, nan selalu menemani di tengah segala riuhku. Mendekatlah kepadaku, Bu. Kupersembahkan puisi ini untukmu:</p>
     <p class="italic"><b>Seribu Cerita Ibu</b></p>
-    <p class="italic" class="line">Hidup seperti panglima perang</p>
+    <p class="italic" class="line">Hidupmu seperti panglima perang</p>
     <p class="italic" class="line">Siap sedia menghadapi rintangan yang datang</p>
-    <p class="italic" class="line">Kesabarannya kokoh, wawasannya tajam</p>
+    <p class="italic" class="line">Kesabaranmu kokoh, wawasanmu tajam</p>
     <p class="italic" class="line">Selalu siaga di waktu pagi menuju malam</p>
-    <p class="italic" class="line">Tiga ribu malaikat mendoakan namanya</p>
-    <p class="italic" class="line">Tak semua orang bisa hidup tanpanya</p>
-    <p class="italic" class="line">Dialah wanita penakluk semesta</p>
+    <p class="italic" class="line">Tiga ribu malaikat mendoakan namamu</p>
+    <p class="italic" class="line">Tak semua orang bisa hidup tanpamu</p>
+    <p class="italic" class="line">Engkaulah wanita penakluk semesta</p>
     <p class="italic" class="line">Yang tetap tersenyum walau terluka</p>
-    <p class="italic" class="line">Dalam diam, ia menyimpan seribu cerita</p>
-    <p class="italic" class="line">Kecilnya diajarkan menenun asa</p>
-    <p class="italic" class="line">Remajanya dibebani harapan keluarga</p>
-    <p class="italic" class="line">Tuanya dipenuhi tanggung jawab setinggi Puncak Jaya</p>
+    <p class="italic" class="line">Dalam diam, kau menyimpan seribu cerita</p>
+    <p class="italic" class="line">Kecilmu diajarkan menenun asa</p>
+    <p class="italic" class="line">Remajamu dibebani harapan keluarga</p>
+    <p class="italic" class="line">Tuamu dipenuhi tanggung jawab setinggi Puncak Jaya</p>
     <p class="italic" class="line">Sekarang, tidurlah dengan tenang</p>
     <p class="italic" class="line">Perjuanganmu akan selalu dikenang</p>
     <p class="italic" class="line">Nama baikmu takkan pernah hilang</p>
