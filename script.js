@@ -37,9 +37,29 @@ const portfolioData = [
   }
 ];
 
+(function () {
+  const saved = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", saved);
+})();
+
 window.addEventListener("load", () => {
   const loader = document.getElementById("loader");
   setTimeout(() => loader.classList.add("hidden"), 600);
+});
+
+const themeToggle = document.getElementById("theme-toggle");
+function syncThemeIcon() {
+  const current = document.documentElement.getAttribute("data-theme");
+  const icon = themeToggle.querySelector("i");
+  if (!icon) return;
+  icon.className = current === "dark" ? "bi bi-sun" : "bi bi-moon-stars";
+}
+syncThemeIcon();
+themeToggle.addEventListener("click", () => {
+  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+  syncThemeIcon();
 });
 
 const navbar = document.getElementById("navbar");
@@ -92,7 +112,7 @@ document.querySelectorAll(".mobile-link").forEach(link => {
 const revealEls = document.querySelectorAll(".reveal");
 const observer  = new IntersectionObserver(
   (entries) => {
-    entries.forEach((entry, i) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const siblings = Array.from(entry.target.parentElement.querySelectorAll(".reveal"));
         const idx = siblings.indexOf(entry.target);
@@ -116,12 +136,10 @@ document.querySelectorAll(".portfolio-item").forEach(item => {
     const idx  = parseInt(item.dataset.index, 10);
     const data = portfolioData[idx];
     if (!data) return;
-
     modalImg.src = data.img;
     modalImg.onerror = function() { this.src = data.imgFallback; this.onerror = null; };
     modalTit.textContent  = data.title;
     modalDesc.textContent = data.desc;
-
     modal.classList.add("open");
     document.body.style.overflow = "hidden";
   });
@@ -160,9 +178,7 @@ document.querySelectorAll(".song-cover-wrap").forEach(wrap => {
   const card  = wrap.closest(".song-card");
   const audio = card.querySelector("audio");
   const icon  = wrap.querySelector(".play-icon");
-
   if (!audio) return;
-
   wrap.addEventListener("click", () => {
     if (audio.paused) {
       document.querySelectorAll("audio").forEach(a => { if (a !== audio) a.pause(); });
@@ -173,12 +189,12 @@ document.querySelectorAll(".song-cover-wrap").forEach(wrap => {
       icon.textContent = "▶";
     }
   });
-
   audio.addEventListener("ended", () => { icon.textContent = "▶"; });
   audio.addEventListener("pause", () => { icon.textContent = "▶"; });
   audio.addEventListener("play",  () => { icon.textContent = "⏸"; });
 });
 
+let dotCount = 0;
 const dotsEl = document.querySelector(".dots");
 if (dotsEl) {
   setInterval(() => {
@@ -210,31 +226,22 @@ window.addEventListener("scroll", setActiveNav, { passive: true });
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("contact-form");
   const successMsg = document.getElementById("form-success");
-
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
-
     const data = new FormData(form);
-
     try {
       const response = await fetch(form.action, {
         method: form.method,
         body: data,
-        headers: { 'Accept': 'application/json' }
+        headers: { "Accept": "application/json" }
       });
-
       if (response.ok) {
         successMsg.classList.add("show");
         form.reset();
-
-        setTimeout(() => {
-          successMsg.classList.remove("show");
-        }, 5000);
-
+        setTimeout(() => { successMsg.classList.remove("show"); }, 5000);
       } else {
         alert("Gagal mengirim. Coba lagi.");
       }
-
     } catch (error) {
       alert("Terjadi error. Cek koneksi.");
     }

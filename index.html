@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ReyStudio</title>
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
@@ -30,11 +36,13 @@
         <li><a href="#portfolio">Portfolio</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <i class="bi bi-moon-stars"></i>
+      </button>
       <button class="nav-burger" id="burger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
-
     <div class="mobile-menu" id="mobile-menu">
       <a href="#about" class="mobile-link">About</a>
       <a href="#songs" class="mobile-link">Music</a>
@@ -43,7 +51,6 @@
       <a href="#contact" class="mobile-link">Contact</a>
     </div>
   </nav>
-
 
   <section id="hero">
     <div class="hero-bg-shape shape-1"></div>
@@ -78,7 +85,6 @@
       </div>
     </div>
   </section>
-
 
   <section id="about" class="section">
     <div class="container">
@@ -140,7 +146,7 @@
             <div class="hobby-card">
               <span class="hobby-icon"></span>
               <span class="hobby-name">Main Game</span>
-              <span class="hobby-desc">Terkadang jago, terkadang cupu :v</span>
+              <span class="hobby-desc">Kadang jago, kadang cupu :v</span>
             </div>
             <div class="hobby-card">
               <span class="hobby-icon"></span>
@@ -148,6 +154,12 @@
               <span class="hobby-desc">Lagunya enak = masuk playlist</span>
             </div>
           </div>
+          <a href="untold-story.html" class="untold-card">
+            <div class="untold-card-text">
+              <span class="untold-card-title">Artikel Bebas</span>
+            </div>
+            <span class="dl-icon">→</span>
+          </a>
         </div>
       </div>
     </div>
@@ -260,8 +272,7 @@
               </div>
             </div>
           </div>
-          <a href="Sebab Senyummu Pernah Singgah.pdf" target="_blank" class="btn btn-download"
-            <span class="dl-icon"></span> Lihat
+          <a href="Sebab Senyummu Pernah Singgah.pdf" target="_self" class="btn btn-download">Lihat
           </a>
         </div>
 
@@ -277,8 +288,7 @@
               </div>
             </div>
           </div>
-          <a href="https://rayyanabdillahanugrah.github.io/WebUltah/" target="_blank" class="btn btn-download"
-            <span class="dl-icon"></span> Kunjungi
+          <a href="https://rayyanabdillahanugrah.github.io/WebUltah/" target="_self" class="btn btn-download">Kunjungi
           </a>
         </div>
 
@@ -294,8 +304,7 @@
               </div>
             </div>
           </div>
-          <a href="https://rayyanabdillahanugrah.github.io/Solaris/" target="_blank" class="btn btn-download"
-            <span class="dl-icon"></span> Kunjungi
+          <a href="https://rayyanabdillahanugrah.github.io/Solaris/" target="_self" class="btn btn-download">Kunjungi
           </a>
         </div>
 
@@ -307,90 +316,54 @@
     <div class="container">
       <div class="section-label reveal">Portfolio</div>
       <h2 class="section-title centered reveal">Prestasi &<br/><em>Momen Terbaik</em></h2>
-      <p class="section-sub reveal">Klik untuk melihat detail</p>
+      <p class="section-sub reveal"></p>
 
       <div class="portfolio-grid">
 
         <div class="portfolio-item reveal" data-index="0">
-          <img
-            class="portfolio-img"
-            src="porto1.jpg"
-            alt="Prestasi 1"
-            onerror="this.src='https://picsum.photos/seed/porto1/600/450'"
-          />
+          <img class="portfolio-img" src="porto1.jpg" alt="Prestasi 1" onerror="this.src='https://picsum.photos/seed/porto1/600/450'"/>
           <div class="portfolio-overlay">
-            <span class="portfolio-icon">⊕</span>
-            <span class="portfolio-label">Lihat Detail</span>
+            <span class="portfolio-label">Lihat</span>
           </div>
           <div class="portfolio-caption">Juara 3 MHQ SMP</div>
         </div>
 
         <div class="portfolio-item reveal" data-index="1">
-          <img
-            class="portfolio-img"
-            src="porto2.jpg"
-            alt="Prestasi 2"
-            onerror="this.src='https://picsum.photos/seed/porto2/600/450'"
-          />
+          <img class="portfolio-img" src="porto2.jpg" alt="Prestasi 2" onerror="this.src='https://picsum.photos/seed/porto2/600/450'"/>
           <div class="portfolio-overlay">
-            <span class="portfolio-icon">⊕</span>
-            <span class="portfolio-label">Lihat Detail</span>
+            <span class="portfolio-label">Lihat</span>
           </div>
           <div class="portfolio-caption">15 Besar Lomba CCI</div>
         </div>
 
         <div class="portfolio-item reveal" data-index="2">
-          <img
-            class="portfolio-img"
-            src="porto3.jpg"
-            alt="Prestasi 3"
-            onerror="this.src='https://picsum.photos/seed/porto3/600/450'"
-          />
+          <img class="portfolio-img" src="porto3-optimal.jpg" alt="Prestasi 3" onerror="this.src='https://picsum.photos/seed/porto3/600/450'"/>
           <div class="portfolio-overlay">
-            <span class="portfolio-icon">⊕</span>
-            <span class="portfolio-label">Lihat Detail</span>
+            <span class="portfolio-label">Lihat</span>
           </div>
           <div class="portfolio-caption">Juara 2 MHQ SMP</div>
         </div>
 
         <div class="portfolio-item reveal" data-index="3">
-          <img
-            class="portfolio-img"
-            src="porto4.jpg"
-            alt="Prestasi 4"
-            onerror="this.src='https://picsum.photos/seed/porto4/600/450'"
-          />
+          <img class="portfolio-img" src="porto4.jpg" alt="Prestasi 4" onerror="this.src='https://picsum.photos/seed/porto4/600/450'"/>
           <div class="portfolio-overlay">
-            <span class="portfolio-icon">⊕</span>
-            <span class="portfolio-label">Lihat Detail</span>
+            <span class="portfolio-label">Lihat</span>
           </div>
           <div class="portfolio-caption">Ketua OSIS</div>
         </div>
 
         <div class="portfolio-item reveal" data-index="4">
-          <img
-            class="portfolio-img"
-            src="porto5.jpg"
-            alt="Prestasi 5"
-            onerror="this.src='https://picsum.photos/seed/porto5/600/450'"
-          />
+          <img class="portfolio-img" src="porto5.jpg" alt="Prestasi 5" onerror="this.src='https://picsum.photos/seed/porto5/600/450'"/>
           <div class="portfolio-overlay">
-            <span class="portfolio-icon">⊕</span>
-            <span class="portfolio-label">Lihat Detail</span>
+            <span class="portfolio-label">Lihat</span>
           </div>
           <div class="portfolio-caption">Juara 2 MHQ SMP</div>
         </div>
 
         <div class="portfolio-item reveal" data-index="5">
-          <img
-            class="portfolio-img"
-            src="porto6.jpg"
-            alt="Prestasi 6"
-            onerror="this.src='https://picsum.photos/seed/porto6/600/450'"
-          />
+          <img class="portfolio-img" src="porto6.jpg" alt="Prestasi 6" onerror="this.src='https://picsum.photos/seed/porto6/600/450'"/>
           <div class="portfolio-overlay">
-            <span class="portfolio-icon">⊕</span>
-            <span class="portfolio-label">Lihat Detail</span>
+            <span class="portfolio-label">Lihat</span>
           </div>
           <div class="portfolio-caption">Juara Harapan 2 FLS3NFG 2026</div>
         </div>
@@ -403,7 +376,7 @@
     <div class="container">
       <div class="section-label reveal">Contact</div>
       <h2 class="section-title centered reveal">Lets <em>Connect</em></h2>
-      <p class="section-sub reveal">Saya terbuka sebagai teman obrolan yang seru</p>
+      <p class="section-sub reveal">Saya terbuka sebagai teman obrolan</p>
 
       <div class="contact-grid">
         <div class="contact-info reveal">
@@ -440,34 +413,21 @@
         </div>
 
         <div class="contact-form-wrap reveal">
-          <form id="contact-form" 
-                action="https://formspree.io/f/xojyavnz" 
-                method="POST">
-           <div class="form-group">
-             <label class="form-label" for="fname">Nama Lengkap</label>
-             <input class="form-input" type="text" id="fname" name="nama"
-                    placeholder="Masukkan nama Anda" required>
-             </div>
-
+          <form id="contact-form" action="https://formspree.io/f/xojyavnz" method="POST">
+            <div class="form-group">
+              <label class="form-label" for="fname">Nama Lengkap</label>
+              <input class="form-input" type="text" id="fname" name="nama" placeholder="Masukkan nama Anda" required>
+            </div>
             <div class="form-group">
               <label class="form-label" for="femail">Email</label>
-              <input class="form-input" type="email" id="femail" name="email"
-                     placeholder="Masukkan email Anda" required>
+              <input class="form-input" type="email" id="femail" name="email" placeholder="Masukkan email Anda" required>
             </div>
-
             <div class="form-group">
               <label class="form-label" for="fmsg">Pesan</label>
-              <textarea class="form-input form-textarea" id="fmsg" name="pesan"
-                        placeholder="Halo! Saya ingin berdiskusi tentang..." required></textarea>
+              <textarea class="form-input form-textarea" id="fmsg" name="pesan" placeholder="Halo! Saya ingin berdiskusi tentang..." required></textarea>
             </div>
-
-            <button type="submit" class="btn btn-primary btn-full">
-               Kirim
-            </button>
-
-            <div class="form-success" id="form-success">
-              ✓ Pesan berhasil dikirim!
-            </div>
+            <button type="submit" class="btn btn-primary btn-full">Kirim</button>
+            <div class="form-success" id="form-success">✓ Pesan berhasil dikirim!</div>
           </form>
         </div>
       </div>
@@ -478,7 +438,7 @@
     <div class="footer-inner">
       <span class="footer-logo">ReyStudio<span class="dot">.</span></span>
       <span class="footer-copy">ReyStudio — Together, we make a difference</span>
-      <a href="#hero" class="footer-top">↑ Atas</a>
+      <a href="#hero" class="footer-top">Kembali</a>
     </div>
   </footer>
 
@@ -493,7 +453,6 @@
     </div>
   </div>
 
-  <button class="scroll-top" id="scroll-top" onclick="scrollToTop()" aria-label="Scroll to top">↑</button>
 
   <script src="script.js"></script>
 </body>
