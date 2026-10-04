@@ -37,29 +37,9 @@ const portfolioData = [
   }
 ];
 
-(function () {
-  const saved = localStorage.getItem("theme") || "light";
-  document.documentElement.setAttribute("data-theme", saved);
-})();
-
 window.addEventListener("load", () => {
   const loader = document.getElementById("loader");
   setTimeout(() => loader.classList.add("hidden"), 600);
-});
-
-const themeToggle = document.getElementById("theme-toggle");
-function syncThemeIcon() {
-  const current = document.documentElement.getAttribute("data-theme");
-  const icon = themeToggle.querySelector("i");
-  if (!icon) return;
-  icon.className = current === "dark" ? "bi bi-sun" : "bi bi-moon-stars";
-}
-syncThemeIcon();
-themeToggle.addEventListener("click", () => {
-  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", next);
-  localStorage.setItem("theme", next);
-  syncThemeIcon();
 });
 
 const navbar = document.getElementById("navbar");
