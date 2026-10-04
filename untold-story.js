@@ -66,7 +66,7 @@ const stories = [
   {
     id: 3,
     title: "Separuh Jiwaku",
-    date: "10 Oktober 2026",
+    date: "4 Oktober 2026",
     preview: "Aku pernah menulis sebuah puisi di atas secarik kertas lusuh untuk sosok terindah dalam hidupku. Ia adalah sekuntum bunga...",
     content: `
     <p class="justify">Aku pernah menulis sebuah puisi di atas secarik kertas lusuh untuk sosok terindah dalam hidupku. Ia adalah sekuntum bunga di tengah gersangnya padang rumput. Pancaran matanya sejernih kristal, mentalnya kuat laksana baja, kalbunya luas bagaikan lautan; sangat terbuka lagi memberi ketenangan bagi setiap insan yang melihatnya.</p>
