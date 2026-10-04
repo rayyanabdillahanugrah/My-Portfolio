@@ -5,7 +5,7 @@ const stories = [
     date: "29 Agustus 2026",
     preview: "Suara azan menggelegar dari toa masjid di sudut kota. Aku bangun dari tidurku yang tidak nyaman. Karpet tipis...",
     content: `
-      <p class="justify" class="italic">Suara azan menggelegar dari toa masjid di sudut kota.</p>
+      <p class="justify"><i class="italic">Suara azan menggelegar dari toa masjid di sudut kota.</i></p>
       <p class="justify">Aku bangun dari tidurku yang tidak nyaman. Karpet tipis yang sobek itu tentu tidak cocok untuk ditiduri, membuat punggungku terasa nyeri seharian.</p>
       <p class="justify">Sudah dua hari perutku keroncongan. Untung saja Bapak membawa nasi box hasil tahlilan semalam. Meski beberapa bagiannya berjamur, aku tak segan menyantapnya. Tak lupa harus kusisakan sedikit untuk adikku yang masih tidur.</p>
       <p class="justify">Hari ini adalah hari pertama sekolahku. Bendera merah-putih sudah menungguku dua kilometer dari sini. Aku membayangkan alangkah asyiknya nanti ku bisa bertemu teman-teman baru. Teman-temanku di sini biasanya ikut orang tua mereka bekerja seharian. Panas-panasan di jalan, katanya. Aku tidak mengerti bagaimana mereka bisa betah.</p>
