@@ -76,7 +76,7 @@ const stories = [
     <p class="italic" class="line">Hidupmu seperti panglima perang</p>
     <p class="italic" class="line">Siap sedia menghadapi rintangan yang datang</p>
     <p class="italic" class="line">Kesabaranmu kokoh, wawasanmu tajam</p>
-    <p class="italic" class="line">Selalu siaga di waktu pagi menuju malam</p>
+    <p class="italic" class="line">Pelindungku di waktu pagi menuju malam</p>
     <p class="italic" class="line">Tiga ribu malaikat mendoakan namamu</p>
     <p class="italic" class="line">Tak semua orang bisa hidup tanpamu</p>
     <p class="italic" class="line">Engkaulah wanita penakluk semesta</p>
