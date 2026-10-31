@@ -237,7 +237,10 @@ const SF_PHOTOS = [
   { src: "frame-06.jpg", title: "Warisan Leluhur", date: "20-06-2026", location: "Jakarta", desc: "f/1.9 | 1/100s | ISO 136 | 6.04 mm" },
   { src: "frame-07.jpg", title: "Pisau Sang Komando", date: "06-10-2024", location: "Jakarta", desc: "f/1.9 | 1/580s | ISO 50 | 6.04 mm" },
   { src: "frame-08.jpg", title: "Mekar Seperti Hatiku", date: "24-11-2024", location: "Bogor", desc: "f/1.9 | 1/105s | ISO 50 | 6.04 mm" },
-  { src: "frame-09.jpg", title: "Abadikanlah Sekitarmu", date: "05-05-2026", location: "Jakarta", desc: "f/1.9 | 1/500s | ISO 50 | 6.04 mm" }
+  { src: "frame-09.jpg", title: "Abadikanlah Sekitarmu", date: "05-05-2026", location: "Jakarta", desc: "f/1.9 | 1/500s | ISO 50 | 6.04 mm" },
+  { src: "frame-10.jpg", title: "Senja Bagi Si Rabun", date: "06-09-2024", location: "Bekasi", desc: "f/1.9 | 1/35s | ISO 336 | 6.04 mm" },
+  { src: "frame-11.jpg", title: "Perayaan Merah Putih", date: "19-07-2026", location: "Jakarta", desc: "f/1.9 | 1/600s | ISO 50 | 6.04 mm" },
+  { src: "frame-12.jpg", title: "Berpayung Hangat Mentari", date: "29-11-2024", location: "Bekasi", desc: "f/1.9 | 1/500s | ISO 50 | 6.04 mm" }
 ];
  
 (function () {
