@@ -1409,3 +1409,8 @@ a.contact-info-val:hover { color: var(--text-muted); }
   .hero-photo { width: 130px; height: 130px; }
   .scroll-top { bottom: 20px; right: 20px; width: 42px; height: 42px; font-size: 16px; }
 }
+
+.sf-gallery.sf-js { touch-action: pan-y; cursor: grab; -webkit-user-select: none; user-select: none; }
+.sf-gallery.sf-js .sf-track { animation: none; }
+.sf-gallery.sf-js.sf-dragging,
+.sf-gallery.sf-js.sf-dragging .sf-frame { cursor: grabbing; }
