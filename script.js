@@ -469,4 +469,175 @@ const SF_PHOTOS = [
     if (e.key === "Tab") { e.preventDefault(); closeBtn.focus(); } 
   });
 })();
+
+(function () {
+  "use strict";
  
+  const CFG = {
+    speedDesktop: 90,
+    speedTablet: 70,
+    speedMobile: 55,
+    inertia: 0.7,
+    maxSpeed: 2600,
+    wheelGain: 5,
+    keyImpulse: 450,
+    dragThreshold: 6,
+    wheelVertical: true
+  };
+ 
+  const gallery = document.getElementById("sf-gallery");
+  const track   = document.getElementById("sf-track");
+  if (!gallery || !track) return;
+ 
+  const reduceMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const hasRO = "ResizeObserver" in window;
+ 
+  let pos = 0;
+  let v = 0;
+  let G = 0;
+  let enabled = false;
+  let hovering = false;
+  let down = false, dragging = false, pid = null;
+  let startX = 0, lastX = 0, lastT = 0, dragV = 0;
+  let suppressClick = false;
+ 
+  function clamp(n) { return Math.max(-CFG.maxSpeed, Math.min(CFG.maxSpeed, n)); }
+ 
+  function baseSpeed() {
+    const w = window.innerWidth;
+    return w <= 480 ? CFG.speedMobile : w <= 900 ? CFG.speedTablet : CFG.speedDesktop;
+  }
+ 
+  function modalOpen() { return gallery.classList.contains("is-modal"); }
+ 
+  function measure() {
+    const g = track.firstElementChild;
+    G = g ? g.offsetWidth : 0;
+  }
+ 
+  function focusPaused() {
+    const a = document.activeElement;
+    try { return !!(a && gallery.contains(a) && a.matches(":focus-visible")); }
+    catch (e) { return false; }
+  }
+ 
+  function autoPaused() {
+    return hovering || down || gallery.classList.contains("is-paused") || modalOpen() || focusPaused();
+  }
+ 
+  function enable() {
+    enabled = true;
+    measure();
+    gallery.classList.add("sf-js");
+  }
+ 
+  function disable() {
+    enabled = false;
+    down = false; dragging = false;
+    gallery.classList.remove("sf-js", "sf-dragging");
+    track.style.transform = "";
+  }
+ 
+  if (hasRO) new ResizeObserver(measure).observe(track);
+ 
+  let last = performance.now();
+  function tick(now) {
+    requestAnimationFrame(tick);
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+ 
+    const ready = !reduceMq.matches && gallery.classList.contains("is-ready") && track.firstElementChild;
+    if (!ready) { if (enabled) disable(); return; }
+    if (!enabled) enable();
+    if (!hasRO) measure();
+    if (!G || gallery.classList.contains("is-offscreen")) return;
+ 
+    if (dragging) {
+      v = dragV;
+    } else {
+      const target = autoPaused() ? 0 : baseSpeed();
+      v += (target - v) * (1 - Math.exp(-dt / CFG.inertia));
+      pos += v * dt;
+    }
+ 
+    const offset = ((pos % G) + G) % G;
+    track.style.transform = "translate3d(" + (-offset).toFixed(2) + "px,0,0)";
+  }
+  requestAnimationFrame(tick);
+ 
+  gallery.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hovering = true; });
+  gallery.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") hovering = false; });
+ 
+  gallery.addEventListener("pointerdown", function (e) {
+    if (!enabled || modalOpen()) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    down = true; dragging = false;
+    pid = e.pointerId;
+    startX = lastX = e.clientX;
+    lastT = e.timeStamp;
+    dragV = 0;
+  });
+ 
+  gallery.addEventListener("pointermove", function (e) {
+    if (!down || e.pointerId !== pid) return;
+    if (!dragging) {
+      if (Math.abs(e.clientX - startX) < CFG.dragThreshold) return;
+      dragging = true;
+      gallery.classList.add("sf-dragging");
+      try { gallery.setPointerCapture(pid); } catch (err) { /* ff or pubg? */ }
+    }
+    const dx = e.clientX - lastX;
+    const dt = Math.max(e.timeStamp - lastT, 1) / 1000;
+    pos -= dx;
+    dragV = dragV * 0.6 + (-dx / dt) * 0.4;
+    lastX = e.clientX;
+    lastT = e.timeStamp;
+  });
+ 
+  function endDrag(e) {
+    if (!down || e.pointerId !== pid) return;
+    const wasDragging = dragging;
+    down = false; dragging = false;
+    gallery.classList.remove("sf-dragging");
+    try { if (gallery.hasPointerCapture(pid)) gallery.releasePointerCapture(pid); } catch (err) { /* i love her... */ }
+    if (wasDragging) {
+      v = (e.timeStamp - lastT > 80) ? 0 : Math.max(-CFG.maxSpeed, Math.min(CFG.maxSpeed, dragV));
+      suppressClick = true;
+      setTimeout(function () { suppressClick = false; }, 60);
+    }
+  }
+  gallery.addEventListener("pointerup", endDrag);
+  gallery.addEventListener("pointercancel", endDrag);
+ 
+  gallery.addEventListener("click", function (e) {
+    if (suppressClick) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
+ 
+  gallery.addEventListener("wheel", function (e) {
+    if (!enabled || modalOpen()) return;
+    let dx = e.deltaX, dy = e.deltaY;
+    if (e.deltaMode === 1) { dx *= 16; dy *= 16; }
+    else if (e.deltaMode === 2) { dx *= gallery.clientWidth; dy *= gallery.clientWidth; }
+    const horizontal = Math.abs(dx) > Math.abs(dy);
+    if (!horizontal && !CFG.wheelVertical) return;
+    e.preventDefault();
+    v = clamp(v + (horizontal ? dx : dy) * CFG.wheelGain);
+  }, { passive: false });
+ 
+  function galleryInView() {
+    const r = gallery.getBoundingClientRect();
+    const visible = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+    return visible > r.height * 0.4;
+  }
+ 
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    if (!enabled || modalOpen()) return;
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    const t = e.target;
+    if (t && (/^(INPUT|TEXTAREA|SELECT|AUDIO)$/.test(t.tagName) || t.isContentEditable)) return;
+    if (!galleryInView()) return;
+    e.preventDefault();
+    v = clamp(v + (e.key === "ArrowRight" ? CFG.keyImpulse : -CFG.keyImpulse));
+  });
+})();
