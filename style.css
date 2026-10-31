@@ -1389,10 +1389,8 @@ a.contact-info-val:hover { color: var(--text-muted); }
   }
   .hero-tags, .hero-actions { justify-content: center; }
   .nav-links { display: none; }
-  .nav-burger { display: flex; }
+  .nav-burger { display: flex; margin-left: auto; }
   .nav-inner { gap: 12px; }
-  .nav-burger { margin-left: 0; }
-  .theme-toggle { margin-left: auto; }
   .section { padding: 72px 20px; }
   .work-card { flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px; }
   .work-card-left { flex-direction: column; gap: 10px; }
