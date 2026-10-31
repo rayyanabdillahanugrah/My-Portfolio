@@ -1412,3 +1412,5 @@ a.contact-info-val:hover { color: var(--text-muted); }
 .sf-gallery.sf-js .sf-track { animation: none; }
 .sf-gallery.sf-js.sf-dragging,
 .sf-gallery.sf-js.sf-dragging .sf-frame { cursor: grabbing; }
+
+#scroll-progress { display: none; }
