@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const SF_PHOTOS = [
   { src: "frame-01.jpg", title: "Bernadya Sudah Bergema", date: "8-02-2025", location: "Bekasi", desc: "f/1.9 | 1/100s | ISO 410 | 6.04 mm" },
   { src: "frame-02.jpg", title: "Museum Kala Itu", date: "20-05-2025", location: "Jogja",  desc: "f/1.9 | 1/100s | ISO 1905 | 6.04 mm" },
-  { src: "frame-03.jpg", title: "Api? Siapa Takut!", date: "13-10-2024", location: "Jakarta", desc: "f/1.9 | 1/100s | ISO 266 | 6.04 mm" },
+  { src: "frame-03.jpg", title: "Api? Siapa Takut!", date: "13-10-2025", location: "Jakarta", desc: "f/1.9 | 1/100s | ISO 266 | 6.04 mm" },
   { src: "frame-04.jpg", title: "Melawan Panas Terik", date: "05-09-2024", location: "Bekasi", desc: "f/1.9 | 1/600s | ISO 50 | 6.04 mm" },
   { src: "frame-05.jpg", title: "Riuh Tahun Baru", date: "31-12-2025", location: "Bandung", desc: "f/1.9 | 1/4s | ISO 50 | 6.04 mm" },
   { src: "frame-06.jpg", title: "Warisan Leluhur", date: "20-06-2026", location: "Jakarta", desc: "f/1.9 | 1/100s | ISO 136 | 6.04 mm" },
