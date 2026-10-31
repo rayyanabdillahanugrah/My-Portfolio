@@ -227,3 +227,240 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+const SF_PHOTOS = [
+  { src: "frame-01.jpg", title: "Bernadya Sudah Bergema", date: "8-02-2025", location: "Bekasi", desc: "f/1.9 | 1/100s | ISO 410 | 6.04 mm" },
+  { src: "frame-02.jpg", title: "Toko Kopi Kala Itu", date: "20-05-2025", location: "Jogja",  desc: "f/1.9 | 1/100s | ISO 845 | 6.04 mm" },
+  { src: "frame-03.jpg", title: "Api? Siapa Takut!", date: "13-10-2024", location: "Jakarta", desc: "f/1.9 | 1/100s | ISO 266 | 6.04 mm" },
+  { src: "frame-04.jpg", title: "Melawan Panas Terik", date: "05-09-2024", location: "Bekasi", desc: "f/1.9 | 1/600s | ISO 50 | 6.04 mm" },
+  { src: "frame-05.jpg", title: "Riuh Tahun Baru", date: "31-12-2025", location: "Bandung", desc: "f/1.9 | 1/4s | ISO 50 | 6.04 mm" },
+  { src: "frame-06.jpg", title: "Warisan Leluhur", date: "20-06-2026", location: "Jakarta", desc: "f/1.9 | 1/100s | ISO 136 | 6.04 mm" }
+];
+ 
+(function () {
+  "use strict";
+ 
+  const gallery   = document.getElementById("sf-gallery");
+  const track     = document.getElementById("sf-track");
+  if (!gallery || !track || !SF_PHOTOS.length) return;
+ 
+  const toggleBtn = document.getElementById("sf-toggle");
+  const modalEl   = document.getElementById("sf-modal");
+  const closeBtn  = document.getElementById("sf-modal-close");
+  const mImg      = document.getElementById("sf-modal-img");
+  const mIndex    = document.getElementById("sf-modal-index");
+  const mTitle    = document.getElementById("sf-modal-title");
+  const mDate     = document.getElementById("sf-modal-date");
+  const mDateRow  = document.getElementById("sf-modal-date-row");
+  const mLoc      = document.getElementById("sf-modal-loc");
+  const mLocRow   = document.getElementById("sf-modal-loc-row");
+  const mDesc     = document.getElementById("sf-modal-desc");
+ 
+  const reduceMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const TILTS = [-2.4, 1.6, -0.9, 2.2, -1.7, 1.0, 2.5, -1.3];
+  let items = [];
+  let copies = 1;
+  let lastFocus = null;
+  let holdTimer = null;
+ 
+  function el(tag, cls) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    return n;
+  }
+ 
+  function measure(photo) {
+    return new Promise(function (resolve) {
+      const img = new Image();
+      img.onload = function () {
+        resolve({ ok: true, ratio: img.naturalHeight ? img.naturalWidth / img.naturalHeight : 0.8 });
+      };
+      img.onerror = function () { resolve({ ok: false, ratio: 0.8 }); };
+      img.src = photo.src;
+    });
+  }
+ 
+  function createFrame(item, index, seq, hidden) {
+    const k = Math.sqrt(Math.min(Math.max(item.ratio, 0.55), 2)) * (item.size || 1);
+    const tilt = typeof item.tilt === "number" ? item.tilt : TILTS[seq % TILTS.length];
+ 
+    const frame = el("button", "sf-frame");
+    frame.type = "button";
+    frame.dataset.index = index;
+    frame.style.setProperty("--sf-ratio", item.ratio.toFixed(4));
+    frame.style.setProperty("--sf-k", k.toFixed(4));
+    frame.style.setProperty("--sf-tilt", tilt + "deg");
+    frame.style.setProperty("--sf-sway-dur", (6 + (index % 4)) + "s");
+    frame.style.setProperty("--sf-sway-delay", (-index * 1.3) + "s");
+    frame.setAttribute("aria-label", "Lihat detail foto: " + item.title);
+    if (hidden) { frame.tabIndex = -1; frame.setAttribute("aria-hidden", "true"); }
+ 
+    const photo = el("span", "sf-photo" + (item.ok ? "" : " is-missing"));
+    if (item.ok) {
+      const img = new Image();
+      img.src = item.src;
+      img.alt = "";
+      img.decoding = "async";
+      img.draggable = false;
+      photo.appendChild(img);
+    }
+ 
+    const card = el("span", "sf-card");
+    card.appendChild(photo);
+ 
+    const idx = el("span", "sf-index");
+    idx.textContent = String(index + 1).padStart(2, "0");
+    card.appendChild(idx);
+ 
+    frame.appendChild(el("span", "sf-clip"));
+    frame.appendChild(card);
+    return frame;
+  }
+ 
+  function buildGroup(isClone) {
+    const group = el("div", "sf-group");
+    if (isClone) { group.dataset.clone = "true"; group.setAttribute("aria-hidden", "true"); }
+    let seq = 0;
+    for (let c = 0; c < copies; c++) {
+      items.forEach(function (item, i) {
+        group.appendChild(createFrame(item, i, seq++, isClone || c > 0));
+      });
+    }
+    return group;
+  }
+ 
+  function render(n) {
+    copies = n;
+    track.textContent = "";
+    track.appendChild(buildGroup(false));
+    track.appendChild(buildGroup(true));
+  }
+ 
+  function speed() {
+    const w = window.innerWidth;
+    return w <= 480 ? 24 : w <= 900 ? 30 : 38;
+  }
+ 
+  function layout() {
+    if (!track.firstElementChild) render(1);
+    const setW = track.firstElementChild.offsetWidth / copies;
+    const need = reduceMq.matches ? 1 : Math.max(1, Math.ceil((gallery.clientWidth + 1) / setW));
+    if (need !== copies) render(need);
+    track.style.setProperty("--sf-duration", (track.firstElementChild.offsetWidth / speed()).toFixed(1) + "s");
+  }
+ 
+  let started = false;
+  function start() {
+    if (started) return;
+    started = true;
+    Promise.all(SF_PHOTOS.map(measure)).then(function (metas) {
+      items = SF_PHOTOS.map(function (p, i) { return Object.assign({}, p, metas[i]); });
+      layout();
+      gallery.classList.add("is-ready");
+    });
+  }
+ 
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      const visible = entries[0].isIntersecting;
+      gallery.classList.toggle("is-offscreen", !visible);
+      if (visible) start();
+    }, { rootMargin: "300px 0px" }).observe(gallery);
+  } else {
+    start();
+  }
+ 
+  let resizeTimer = null;
+  let lastW = window.innerWidth;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (!items.length || window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      layout();
+    }, 200);
+  });
+ 
+  if (reduceMq.addEventListener) {
+    reduceMq.addEventListener("change", function () { if (items.length) layout(); });
+  }
+ 
+  gallery.addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "mouse") return;
+    clearTimeout(holdTimer);
+    gallery.classList.add("is-held");
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) {
+    gallery.addEventListener(ev, function (e) {
+      if (e.pointerType === "mouse") return;
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(function () { gallery.classList.remove("is-held"); }, 900);
+    });
+  });
+ 
+  function formatDate(v) {
+    if (!v) return "";
+    try {
+      let m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+      if (m) {
+        return new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric" })
+          .format(new Date(+m[1], +m[2] - 1, +m[3]));
+      }
+      m = /^(\d{4})-(\d{2})$/.exec(v);
+      if (m) {
+        return new Intl.DateTimeFormat("id-ID", { month: "long", year: "numeric" })
+          .format(new Date(+m[1], +m[2] - 1, 1));
+      }
+    } catch (e) { /* by1 kita bos */ }
+    return v;
+  }
+ 
+  function sfOpen(index, trigger) {
+    const item = items[index];
+    if (!item) return;
+    lastFocus = trigger || document.activeElement;
+ 
+    mIndex.textContent = String(index + 1).padStart(2, "0") + " / " + String(items.length).padStart(2, "0");
+    mTitle.textContent = item.title || "";
+    const dateText = formatDate(item.date);
+    mDate.textContent = dateText;
+    mDateRow.hidden = !dateText;
+    mLoc.textContent = item.location || "";
+    mLocRow.hidden = !item.location;
+    mDesc.textContent = item.desc || "";
+ 
+    mImg.hidden = !item.ok;
+    mImg.src = item.ok ? item.src : "";
+    mImg.alt = item.alt || item.title || "";
+ 
+    modalEl.classList.add("is-open");
+    modalEl.setAttribute("aria-hidden", "false");
+    gallery.classList.add("is-modal");
+    document.body.style.overflow = "hidden";
+    closeBtn.focus({ preventScroll: true });
+  }
+ 
+  function sfClose() {
+    modalEl.classList.remove("is-open");
+    modalEl.setAttribute("aria-hidden", "true");
+    gallery.classList.remove("is-modal");
+    document.body.style.overflow = "";
+    if (lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
+    lastFocus = null;
+  }
+ 
+  track.addEventListener("click", function (e) {
+    const frame = e.target.closest(".sf-frame");
+    if (frame) sfOpen(parseInt(frame.dataset.index, 10), frame);
+  });
+ 
+  closeBtn.addEventListener("click", sfClose);
+  modalEl.addEventListener("click", function (e) { if (e.target === modalEl) sfClose(); });
+ 
+  document.addEventListener("keydown", function (e) {
+    if (!modalEl.classList.contains("is-open")) return;
+    if (e.key === "Escape") sfClose();
+    if (e.key === "Tab") { e.preventDefault(); closeBtn.focus(); } 
+  });
+})();
+ 

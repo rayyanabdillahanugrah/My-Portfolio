@@ -30,6 +30,7 @@
         <li><a href="#about">About</a></li>
         <li><a href="#songs">Music</a></li>
         <li><a href="#works">Works</a></li>
+        <li><a href="#frames">Frames</a></li>
         <li><a href="#portfolio">Portfolio</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -41,6 +42,7 @@
       <a href="#about" class="mobile-link">About</a>
       <a href="#songs" class="mobile-link">Music</a>
       <a href="#works" class="mobile-link">Works</a>
+      <a href="#frames" class="mobile-link">Frames</a>
       <a href="#portfolio" class="mobile-link">Portfolio</a>
       <a href="#contact" class="mobile-link">Contact</a>
     </div>
@@ -150,7 +152,7 @@
           </div>
           <a href="untold-story.html" class="untold-card">
             <div class="untold-card-text">
-              <span class="untold-card-title">Artikel Bebas</span>
+              <span class="untold-card-title">My Article</span>
             </div>
             <span class="dl-icon">→</span>
           </a>
@@ -306,6 +308,17 @@
     </div>
   </section>
 
+  <section id="frames" class="section sf-section">
+    <div class="container">
+      <div class="section-label reveal">Selected Frames</div>
+      <h2 class="section-title centered reveal">World Through<br/><em>My Lens</em></h2>
+    </div>
+ 
+    <div class="sf-gallery reveal" id="sf-gallery" role="region" aria-label="Galeri Selected Frames">
+      <div class="sf-track" id="sf-track"></div>
+    </div>
+  </section>
+
   <section id="portfolio" class="section section-alt">
     <div class="container">
       <div class="section-label reveal">Portfolio</div>
@@ -443,6 +456,30 @@
       <div class="modal-body">
         <h3 class="modal-title" id="modal-title"></h3>
         <p class="modal-desc" id="modal-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sf-modal" id="sf-modal" role="dialog" aria-modal="true" aria-labelledby="sf-modal-title" aria-hidden="true">
+    <div class="sf-modal__box">
+      <button type="button" class="sf-modal__close" id="sf-modal-close" aria-label="Tutup">✕</button>
+      <div class="sf-modal__media">
+        <img id="sf-modal-img" src="" alt=""/>
+      </div>
+      <div class="sf-modal__body">
+        <span class="sf-modal__eyebrow" id="sf-modal-index"></span>
+        <h3 class="sf-modal__title" id="sf-modal-title"></h3>
+        <dl class="sf-modal__meta">
+          <div id="sf-modal-date-row">
+            <dt>Date</dt>
+            <dd id="sf-modal-date"></dd>
+          </div>
+          <div id="sf-modal-loc-row">
+            <dt>Location</dt>
+            <dd id="sf-modal-loc"></dd>
+          </div>
+        </dl>
+        <p class="sf-modal__desc" id="sf-modal-desc"></p>
       </div>
     </div>
   </div>
