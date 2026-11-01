@@ -1414,3 +1414,63 @@ a.contact-info-val:hover { color: var(--text-muted); }
 .sf-gallery.sf-js.sf-dragging .sf-frame { cursor: grabbing; }
 
 #scroll-progress { display: none; }
+
+:root {
+  --star-1: #b3ab9c;
+  --star-2: #c4bcad;
+  --star-3: #a39b8d;
+}
+[data-theme="dark"] {
+  --star-1: #6e695f;
+  --star-2: #5f5a51;
+  --star-3: #7b756a;
+}
+
+body { position: relative; }
+
+#hero { background: transparent; }
+
+#star-layer {
+  position: absolute;
+  inset: 0;               
+  z-index: -1;             
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  top: 0; left: 0;
+  color: var(--star-1);
+  opacity: .85;
+}
+.star[data-tone="2"] { color: var(--star-2); }
+.star[data-tone="3"] { color: var(--star-3); }
+.star.is-held { will-change: transform; }
+
+.star svg {
+  display: block;
+  width: 100%; height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(var(--r, 0deg)) scale(1);
+  transition: transform .25s ease;
+}
+.star svg path { vector-effect: non-scaling-stroke; }
+.star.is-held svg { transform: rotate(var(--r, 0deg)) scale(1.08); }
+
+body.star-hover { cursor: grab; }
+body.star-dragging {
+  cursor: grabbing;
+  -webkit-user-select: none;
+  user-select: none;
+}
+body.star-dragging * { cursor: grabbing !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .star svg { transition: none; }
+}
