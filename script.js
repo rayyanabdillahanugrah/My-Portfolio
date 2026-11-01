@@ -641,3 +641,294 @@ const SF_PHOTOS = [
     v = clamp(v + (e.key === "ArrowRight" ? CFG.keyImpulse : -CFG.keyImpulse));
   });
 })();
+
+ (function () {
+  "use strict";
+
+  const KEY  = "reystudio:stars:v1";
+  const NS   = "http://www.w3.org/2000/svg";
+  const PASS = /^(DIV|SECTION|MAIN|UL|NAV|HEADER)$/;
+
+  const layer = document.createElement("div");
+  layer.id = "star-layer";
+  layer.setAttribute("aria-hidden", "true");
+  document.body.prepend(layer);
+
+  const stars = [];         
+  let W = 0, H = 0;         
+  let ref = null;           
+  let drag = null;
+  let swallow = false;
+
+  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  const lerp  = (a, b, t) => a + (b - a) * t;
+  const f     = n => n.toFixed(1);
+  const cellSize = () => clamp(W * 0.24, 280, 380);
+
+  function seeded(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  
+  function doodlePath(rand) {
+    const rnd = (a, b) => lerp(a, b, rand());
+    const R = rnd(9.5, 11), rot = rnd(-0.3, 0.3);
+    const pt = (a, r) => [12 + Math.cos(a) * r, 12 + Math.sin(a) * r];
+
+    if (rand() < 0.5) {                 
+      const rin = R * rnd(0.42, 0.52), p = [];
+      for (let i = 0; i < 10; i++) {
+        const a = -Math.PI / 2 + rot + i * Math.PI / 5 + rnd(-0.07, 0.07);
+        p.push(pt(a, (i % 2 ? rin : R) * rnd(0.9, 1.08)));
+      }
+      p.push([p[0][0] + rnd(-0.6, 1.4), p[0][1] + rnd(0.2, 1.8)]);
+      return "M" + p.map(q => f(q[0]) + " " + f(q[1])).join("L");
+    }
+
+    const v = [];                             
+    for (let i = 0; i < 5; i++) {
+      v.push(pt(-Math.PI / 2 + rot + i * 2 * Math.PI / 5 + rnd(-0.06, 0.06), R * rnd(0.92, 1.06)));
+    }
+    const order = [0, 2, 4, 1, 3, 0];
+    let d = "M" + f(v[0][0]) + " " + f(v[0][1]);
+    for (let i = 1; i < order.length; i++) {
+      const a = v[order[i - 1]];
+      let b = v[order[i]];
+      if (i === order.length - 1) b = [b[0] + rnd(-0.7, 0.7), b[1] + rnd(-0.7, 0.7)];
+      d += "Q" + f((a[0] + b[0]) / 2 + rnd(-0.9, 0.9)) + " " + f((a[1] + b[1]) / 2 + rnd(-0.9, 0.9)) +
+           " " + f(b[0]) + " " + f(b[1]);
+    }
+    return d;
+  }
+
+  function makeStar(x, y, seed) {
+    const rand = seeded(seed);
+    const size = Math.round(rand() < 0.8 ? lerp(8, 12, rand()) : lerp(12, 16, rand()));
+    const el = document.createElement("div");
+    el.className = "star";
+    el.dataset.tone = String(1 + Math.floor(rand() * 3));
+    el.style.width = el.style.height = size + "px";
+    el.style.setProperty("--r", Math.round(lerp(-25, 25, rand())) + "deg");
+
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("d", doodlePath(rand));
+    svg.appendChild(path);
+    el.appendChild(svg);
+    layer.appendChild(el);
+
+    const s = { el, size, seed, x, y };
+    stars.push(s);
+    return s;
+  }
+
+  const px = s => clamp(s.x, s.size / 2, Math.max(s.size / 2, W - s.size / 2));
+  const py = s => clamp(s.y, s.size / 2, Math.max(s.size / 2, H - s.size / 2));
+  function paint(s) {
+    s.el.style.transform =
+      "translate(" + f(px(s) - s.size / 2) + "px," + f(py(s) - s.size / 2) + "px)";
+  }
+
+  function populate(y0, y1) {
+    const c = cellSize();
+    const cols = Math.max(1, Math.floor(W / c));
+    const rows = Math.max(1, Math.round((y1 - y0) / c));
+    const cw = W / cols, ch = (y1 - y0) / rows;
+    for (let r = 0; r < rows; r++) {
+      for (let k = 0; k < cols; k++) {
+        if (Math.random() < 0.28) continue;    
+        makeStar(
+          (k + lerp(0.2, 0.8, Math.random())) * cw,
+          y0 + (r + lerp(0.2, 0.8, Math.random())) * ch,
+          Math.floor(Math.random() * 2147483647)
+        );
+      }
+    }
+  }
+
+  function save() {
+    if (!ref) return;
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        v: 1, w: ref.w, h: ref.h,
+        s: stars.map(s => [+s.x.toFixed(1), +s.y.toFixed(1), s.seed])
+      }));
+    } catch (e) {  }
+  }
+  let saveTimer = 0;
+  function saveSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(save, 250); }
+
+  function load() {
+    try {
+      const d = JSON.parse(localStorage.getItem(KEY));
+      if (!d || d.v !== 1 || !Array.isArray(d.s) || !(d.w > 0) || !(d.h > 0)) return null;
+      const s = d.s.slice(0, 300).filter(a => Array.isArray(a) && a.length >= 3 && a.every(Number.isFinite));
+      return s.length ? { w: d.w, h: d.h, s } : null;
+    } catch (e) { return null; }
+  }
+
+  function relayout() {
+    const nw = layer.offsetWidth, nh = layer.offsetHeight;
+    if (!nw || !nh || !ref) return;
+    W = nw; H = nh;
+    let changed = false;
+
+    if (Math.abs(W - ref.w) >= 2) {
+      const kx = W / ref.w, ky = H / ref.h;
+      stars.forEach(s => { s.x *= kx; s.y *= ky; });
+      ref.w = W; ref.h = H;
+      changed = true;
+    } else if (H - ref.h >= cellSize()) {  
+      populate(ref.h, H);
+      ref.h = H;
+      changed = true;
+    }                                        
+
+    stars.forEach(paint);
+    if (drag) follow();
+    if (changed) saveSoon();
+  }
+
+  const isClear = c => c === "transparent" || /^rgba\([^)]*,\s*0\)$/.test(c) || /\/\s*0\)$/.test(c);
+
+  function isOpen(cx, cy) {
+    let el = document.elementFromPoint(cx, cy);
+    if (!el) return false;
+    const t = el.tagName;
+    if (t !== "HTML" && t !== "BODY" && !PASS.test(t)) return false;
+    for (; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+      const cs = getComputedStyle(el);
+      if (!isClear(cs.backgroundColor) || cs.backgroundImage !== "none") return false;
+    }
+    return true;
+  }
+
+  function pick(cx, cy, touch) {
+    if (!stars.length) return null;
+    const r = layer.getBoundingClientRect();  
+    const x = cx - r.left, y = cy - r.top;
+    let best = null, bd = Infinity;
+    for (const s of stars) {
+      const d = Math.hypot(x - px(s), y - py(s));
+      const reach = Math.max(s.size / 2, touch ? 22 : 12);
+      if (d <= reach && d < bd) { best = s; bd = d; }
+    }
+    return best && isOpen(cx, cy) ? best : null;
+  }
+
+  
+  let lastX = 0, lastY = 0, autoRaf = 0;
+
+  function follow() {                      
+    if (!drag) return;
+    const r = layer.getBoundingClientRect(), s = drag.s, h = s.size / 2;
+    s.x = clamp(lastX - r.left - drag.ox, h, Math.max(h, W - h));
+    s.y = clamp(lastY - r.top  - drag.oy, h, Math.max(h, H - h));
+    paint(s);
+  }
+
+  function autoScroll() {                     
+    autoRaf = 0;
+    if (!drag) return;
+    const m = 60, vh = window.innerHeight;
+    let v = 0;
+    if (lastY < m) v = -(m - Math.max(lastY, 0)) / m;
+    else if (lastY > vh - m) v = (Math.min(lastY, vh) - (vh - m)) / m;
+    if (!v) return;
+    const dy = Math.round(v * 16);
+    try { window.scrollBy({ top: dy, left: 0, behavior: "instant" }); }  
+    catch (e) { window.scrollBy(0, dy); }
+    follow();
+    autoRaf = requestAnimationFrame(autoScroll);
+  }
+
+  document.addEventListener("pointerdown", e => {
+    if (drag || !e.isPrimary || (e.pointerType === "mouse" && e.button !== 0)) return;
+    const s = pick(e.clientX, e.clientY, e.pointerType !== "mouse");
+    if (!s) return;
+    e.preventDefault();
+    e.stopPropagation();                       
+    const r = layer.getBoundingClientRect();
+    s.x = px(s); s.y = py(s);                 
+    lastX = e.clientX; lastY = e.clientY;
+    drag = {
+      s, id: e.pointerId,
+      ox: e.clientX - r.left - s.x,           
+      oy: e.clientY - r.top  - s.y
+    };
+    s.el.classList.add("is-held");
+    document.body.classList.add("star-dragging");
+    document.body.classList.remove("star-hover");
+  }, true);
+
+  window.addEventListener("pointermove", e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    lastX = e.clientX; lastY = e.clientY;
+    follow();
+    if (!autoRaf) autoRaf = requestAnimationFrame(autoScroll);
+  });
+
+  window.addEventListener("scroll", follow, { passive: true });  
+
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    drag.s.el.classList.remove("is-held");
+    document.body.classList.remove("star-dragging");
+    cancelAnimationFrame(autoRaf); autoRaf = 0;
+    drag = null;
+    swallow = true; setTimeout(() => { swallow = false; }, 60);
+    save();
+  }
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
+  window.addEventListener("blur", () => { if (drag) endDrag({ pointerId: drag.id }); });
+
+  document.addEventListener("click", e => {
+    if (swallow) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  const blockScroll = e => { if (drag) e.preventDefault(); };
+  document.addEventListener("touchstart", blockScroll, { passive: false, capture: true });
+  document.addEventListener("touchmove", blockScroll, { passive: false });
+
+  let hRaf = 0, mx = 0, my = 0;
+  window.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse" || drag) return;
+    mx = e.clientX; my = e.clientY;
+    if (hRaf) return;
+    hRaf = requestAnimationFrame(() => {
+      hRaf = 0;
+      document.body.classList.toggle("star-hover", !!pick(mx, my, false));
+    });
+  });
+
+  function init() {
+    W = layer.offsetWidth; H = layer.offsetHeight;
+    if (!W || !H) return;
+
+    const saved = load();
+    if (saved) {
+      ref = { w: saved.w, h: saved.h };
+      saved.s.forEach(a => makeStar(a[0], a[1], a[2]));
+    } else {
+      ref = { w: W, h: H };
+      populate(0, H);
+      save();
+    }
+    relayout();                               
+
+    let raf = 0;
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; relayout(); }); };
+    if ("ResizeObserver" in window) new ResizeObserver(schedule).observe(layer);   // tinggi/lebar halaman berubah
+    else window.addEventListener("resize", schedule);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+  }
+
+  if (document.readyState === "complete") init();
+  else window.addEventListener("load", init, { once: true });
+})();
