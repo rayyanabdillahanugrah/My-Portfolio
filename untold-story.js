@@ -162,15 +162,6 @@ function openStory(id) {
   renderList();
   renderContent();
   const isMobile = window.innerWidth <= 768;
-  if (isMobile) {
-    const content = document.getElementById("us-content");
-    setTimeout(() => {
-      content.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
-  } else {
-    const content = document.getElementById("us-content");
-    content.scrollTo({ top: 0, behavior: "smooth" });
-  }
 }
 
 renderList();
