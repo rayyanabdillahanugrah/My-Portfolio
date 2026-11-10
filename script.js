@@ -971,10 +971,11 @@ const VINYL_ALBUMS = [
   },
   {
     id: 6,
-    title "Dewi",
+    title: "Dewi",
     artist: "Alexa",
     cover: "dewi.jpg",
     audio: "Alexa_-_Dewi_(mp3.pm).mp3"
+  }
 ];
 
 (function () {
