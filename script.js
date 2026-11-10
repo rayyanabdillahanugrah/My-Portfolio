@@ -974,7 +974,7 @@ const VINYL_ALBUMS = [
     title: "Dewi",
     artist: "Alexa",
     cover: "dewi.jpg",
-    audio: "Alexa_-_Dewi_(mp3.pm).mp3"
+    audio: "Dewi.mp3"
   }
 ];
 
