@@ -49,7 +49,7 @@ const stories = [
       <p class="justify">Padahal, ada sesuatu yang jauh lebih mendasar daripada semua itu:</p>
       <p class="justify"><b>kemampuan untuk memperhatikan.</b></p>
       <p class="justify"><i class="italic">We can say it as “noticing”</i>—yaitu menyadari sesuatu yang sebelumnya luput dari perhatian kita.</i></p>
-      <p class="justify">Bayangan yang tadi kita lewatin begitu aja tiba-tiba terlihat sebuah pola. Jendela angkot yang biasanya dibuka agar ada sirkulasi udara berubah jadi sebuah frame. Genangan air bisa dipakai buat cermin. Cahaya matahari yang masuk lewat sela-sela gedung bisa membentuk garis yang membelah jalan.</p>
+      <p class="justify">Bayangan yang tadi kita lewatin begitu aja tiba-tiba terlihat sebuah pola. Jendela angkot yang biasanya dibuka agar ada sirkulasi udara berubah jadi sebuah frame. Genangan air bisa dipakai buat bercermin. Cahaya matahari yang masuk lewat sela-sela gedung bisa membentuk garis yang membelah jalan.</p>
       <p class="justify">Objeknya tidak berubah. Perhatian kita yang berubah.</p>
       <p class="justify">Menariknya, gagasan ini bukan sekadar hiperbola tentang bagaimana fotografer melihat dunia. Ada penelitian psikologi yang secara khusus membahas hubungan antara aktivitas memotret dan perhatian terhadap pengalaman visual. </p>
       <p class="justify">Dalam sebuah review yang diterbitkan di <i class="italic">Current Opinion in Psychology</i>, Kristin Diehl dan Gal Zauberman menjelaskan konsep <i class="italic">mindful photo-taking</i>. Menurut mereka, aktivitas memotret secara alami dapat mendorong seseorang untuk memberikan perhatian lebih pada aspek visual dari pengalaman yang sedang dijalani.</p>
