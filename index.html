@@ -164,85 +164,70 @@
   <section id="songs" class="section section-alt">
     <div class="container">
       <div class="section-label reveal">Music</div>
-      <h2 class="section-title centered reveal">My Top Picks<br/><em>Tiga Lagu Favorit</em></h2>
-       <p class="section-sub reveal">ㅤ</p>
+      <h2 class="section-title centered reveal">My Top Picks<br/><em>Enam Lagu Favorit</em></h2>
+       <p class="section-sub reveal">Menjelma dalam kata, mendayu hingga ke sukma</p>
 
 
-      <div class="songs-grid">
+      <div class="vp-layout reveal" id="vinyl-player">
 
-        <div class="song-card reveal">
-          <div class="song-cover-wrap">
-            <img
-              class="song-cover"
-              src="The-Queen-is-Dead-cover.png"
-              alt="Album Cover 1"
-              onerror="this.src='https://ui-avatars.com/api/?name=♫&size=120&background=1a1a2e&color=fff&font-size=0.6'"
-            />
-            <div class="song-play-overlay">
-              <span class="play-icon">▶</span>
+        <div class="vp-left">
+          <div class="vp-deck" id="vp-deck">
+            <i class="vp-screw s1"></i><i class="vp-screw s2"></i><i class="vp-screw s3"></i><i class="vp-screw s4"></i>
+
+            <div class="vp-platter">
+              <div class="vp-record" id="vp-record">
+                <div class="vp-label"><img id="vp-label-img" alt=""/></div>
+              </div>
+              <div class="vp-sheen"></div>
+              <i class="vp-spindle"></i>
+            </div>
+
+            <i class="vp-led" id="vp-led"></i>
+            <i class="vp-rest"></i>
+            <div class="vp-pivot"></div>
+            <div class="vp-arm" id="vp-arm">
+              <i class="vp-arm-cw"></i>
+              <i class="vp-arm-tube"></i>
+              <i class="vp-arm-head"></i>
+              <i class="vp-arm-stylus"></i>
+            </div>
+
+            <div class="vp-knob-well" id="vp-knob" role="slider" tabindex="0" aria-label="Volume"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+              <div class="vp-knob"><i class="vp-knob-mark"></i></div>
             </div>
           </div>
-          <div class="song-info">
-            <span class="song-num">01</span>
-            <div>
-              <h4 class="song-title">There Is a Light That Never Goes Out</h4>
-              <p class="song-artist">The Smiths</p>
+
+          <div class="vp-card">
+            <div class="vp-head">
+              <div class="vp-meta">
+                <h4 class="vp-title" id="vp-title">—</h4>
+                <p class="vp-artist" id="vp-artist"></p>
+              </div>
+              <div class="vp-controls">
+                <button type="button" class="vp-btn" id="vp-prev" aria-label="Lagu sebelumnya">
+                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 3.2h1.6v9.6H3.5zM13 3.6v8.8a.5.5 0 0 1-.8.4L6.2 8.4a.5.5 0 0 1 0-.8l6-4.4a.5.5 0 0 1 .8.4z"/></svg>
+                </button>
+                <button type="button" class="vp-btn vp-btn--main" id="vp-play" aria-label="Putar">
+                  <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.9v10.2a.5.5 0 0 0 .77.42l8-5.1a.5.5 0 0 0 0-.84l-8-5.1a.5.5 0 0 0-.77.42z"/></svg>
+                  <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h2.6v10H4zM9.4 3H12v10H9.4z"/></svg>
+                </button>
+                <button type="button" class="vp-btn" id="vp-next" aria-label="Lagu berikutnya">
+                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.9 3.2h1.6v9.6h-1.6zM3 3.6v8.8a.5.5 0 0 0 .8.4l6-4.4a.5.5 0 0 0 0-.8l-6-4.4a.5.5 0 0 0-.8.4z"/></svg>
+                </button>
+              </div>
+            </div>
+            <p class="vp-note" id="vp-note" role="status" hidden></p>
+            <div class="vp-progress">
+              <span class="vp-time" id="vp-cur">0:00</span>
+              <input type="range" id="vp-seek" min="0" max="100" step="0.1" value="0" aria-label="Posisi lagu" disabled/>
+              <span class="vp-time" id="vp-dur">0:00</span>
             </div>
           </div>
-          <audio controls class="audio-player">
-            <source src="The_Smiths_There_Is_a_Light_That_Never_Goes_Out_2011_Remaster.mp3" type="audio/mp3"/>
-            Browser Anda tidak mendukung audio.
-          </audio>
         </div>
 
-        <div class="song-card reveal">
-          <div class="song-cover-wrap">
-            <img
-              class="song-cover"
-              src="lagipulahidupakanberakhir.jpeg"
-              alt="Album Cover 2"
-              onerror="this.src='https://ui-avatars.com/api/?name=♬&size=120&background=2d1b69&color=fff&font-size=0.6'"
-            />
-            <div class="song-play-overlay">
-              <span class="play-icon">▶</span>
-            </div>
-          </div>
-          <div class="song-info">
-            <span class="song-num">02</span>
-            <div>
-              <h4 class="song-title">Alexandra</h4>
-              <p class="song-artist">Hindia</p>
-            </div>
-          </div>
-          <audio controls class="audio-player">
-            <source src="Hindia - Alexandra.mp3" type="audio/mp3"/>
-            Browser Anda tidak mendukung audio.
-          </audio>
-        </div>
-
-        <div class="song-card reveal">
-          <div class="song-cover-wrap">
-            <img
-              class="song-cover"
-              src="heyjudealbum.jpeg"
-              alt="Album Cover 3"
-              onerror="this.src='https://ui-avatars.com/api/?name=🎵&size=120&background=0d3b66&color=fff&font-size=0.5'"
-            />
-            <div class="song-play-overlay">
-              <span class="play-icon">▶</span>
-            </div>
-          </div>
-          <div class="song-info">
-            <span class="song-num">03</span>
-            <div>
-              <h4 class="song-title">Hey Jude</h4>
-              <p class="song-artist">The Beatles</p>
-            </div>
-          </div>
-          <audio controls class="audio-player">
-            <source src="The Beatles - Hey Jude (2015 Mix).mp3" type="audio/mp3"/>
-            Browser Anda tidak mendukung audio.
-          </audio>
+        <div class="vp-right">
+          <div class="vs-cabinet" id="vs-cabinet" role="group" aria-label="Koleksi album"></div>
         </div>
 
       </div>

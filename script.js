@@ -924,11 +924,274 @@ const SF_PHOTOS = [
 
     let raf = 0;
     const schedule = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; relayout(); }); };
-    if ("ResizeObserver" in window) new ResizeObserver(schedule).observe(layer);   // tinggi/lebar halaman berubah
+    if ("ResizeObserver" in window) new ResizeObserver(schedule).observe(layer);
     else window.addEventListener("resize", schedule);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
   }
 
   if (document.readyState === "complete") init();
   else window.addEventListener("load", init, { once: true });
+})();
+
+const VINYL_ALBUMS = [
+  {
+    id: 1,
+    title: "There Is a Light That Never Goes Out",
+    artist: "The Smiths",
+    cover: "The-Queen-is-Dead-cover.png",
+    audio: "The_Smiths_There_Is_a_Light_That_Never_Goes_Out_2011_Remaster.mp3"
+  },
+  {
+    id: 2,
+    title: "Alexandra",
+    artist: "Hindia",
+    cover: "lagipulahidupakanberakhir.jpeg",
+    audio: "Hindia - Alexandra.mp3"
+  },
+  {
+    id: 3,
+    title: "Hey Jude",
+    artist: "The Beatles",
+    cover: "heyjudealbum.jpeg",
+    audio: "The Beatles - Hey Jude (2015 Mix).mp3"
+  },
+  {
+    id: 4,
+    title: "Stargazing",
+    artist: "Farrel Hilal",
+    cover: "stargazing.jpg",
+    audio: "Stargazing.mp3"
+  },
+  {
+    id: 5,
+    title: "Selaras",
+    artist: "Kunto Aji, Nadin Amizah",
+    cover: "selaras.jpg",
+    audio: "Selaras - Kunto Aji & Nadin Amizah [Lirik].mp3"
+  },
+  {
+    id: 6,
+    title "Dewi",
+    artist: "Alexa",
+    cover: "dewi.jpg",
+    audio: "Alexa_-_Dewi_(mp3.pm).mp3"
+];
+
+(function () {
+  "use strict";
+
+  const deck = document.getElementById("vp-deck");
+  const cabinet = document.getElementById("vs-cabinet");
+  if (!deck || !cabinet || !VINYL_ALBUMS.length) return;
+
+  const $ = id => document.getElementById(id);
+  const labelImg = $("vp-label-img"), titleEl = $("vp-title"), artistEl = $("vp-artist"),
+        noteEl = $("vp-note"), curEl = $("vp-cur"), durEl = $("vp-dur"), seek = $("vp-seek"),
+        playBtn = $("vp-play"), prevBtn = $("vp-prev"), nextBtn = $("vp-next"), knob = $("vp-knob");
+
+  
+  const playlist = [];
+  VINYL_ALBUMS.forEach(function (a, ai) {
+    const tracks = Array.isArray(a.tracks) && a.tracks.length ? a.tracks : [{ title: a.title, audio: a.audio }];
+    tracks.forEach(function (t) {
+      playlist.push({ album: ai, title: t.title || a.title, artist: t.artist || a.artist, audio: t.audio });
+    });
+  });
+
+  const audio = new Audio();
+  audio.preload = "metadata";
+  let cur = 0, wantPlay = false, seeking = false, switching = false, vol = 0.7;
+
+  function fmt(s) {
+    if (!isFinite(s) || s < 0) s = 0;
+    return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  }
+  function setNote(msg) { noteEl.hidden = !msg; noteEl.textContent = msg || ""; }
+
+  VINYL_ALBUMS.forEach(function (a) { const p = new Image(); p.src = a.cover; });
+  
+  const albumBtns = [];
+  (function buildShelf() {
+    const cells = Math.max(6, Math.ceil(VINYL_ALBUMS.length / 2) * 2);
+    for (let i = 0; i < cells; i++) {
+      const cell = document.createElement("div");
+      cell.className = "vs-cell";
+      const a = VINYL_ALBUMS[i];
+      if (a) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "vs-album";
+        b.setAttribute("aria-label", "Putar album: " + a.title);
+        b.setAttribute("aria-pressed", "false");
+        const img = new Image();
+        img.alt = ""; img.draggable = false; img.src = a.cover;
+        img.addEventListener("error", function () { b.classList.add("is-missing"); img.remove(); });
+        b.appendChild(img);
+        b.addEventListener("click", function () { onAlbumClick(i); });
+        cell.appendChild(b);
+        albumBtns.push(b);
+      }
+      cabinet.appendChild(cell);
+    }
+  })();
+
+
+  function stopUI() {
+    deck.classList.remove("is-arm-down", "is-spinning");
+    playBtn.classList.remove("is-playing");
+    playBtn.setAttribute("aria-label", "Putar");
+  }
+  function updateSeekUI() {
+    const max = parseFloat(seek.max) || 0;
+    seek.style.setProperty("--p", (max ? (parseFloat(seek.value) / max) * 100 : 0) + "%");
+  }
+  function showTrack() {
+    const t = playlist[cur], alb = VINYL_ALBUMS[t.album];
+    titleEl.textContent = t.title;
+    artistEl.textContent = t.artist;
+    labelImg.style.visibility = "visible";
+    labelImg.src = alb.cover;
+    albumBtns.forEach(function (b, i) {
+      const on = i === t.album;
+      b.classList.toggle("is-selected", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    seek.value = 0; seek.max = 100; seek.disabled = true;
+    curEl.textContent = "0:00"; durEl.textContent = "0:00";
+    updateSeekUI();
+  }
+  labelImg.addEventListener("error", function () { labelImg.style.visibility = "hidden"; });
+
+
+  function showError() {
+    switching = false;
+    stopUI();
+    setNote("Audio tidak dapat diputar. Periksa path berkas lagu di VINYL_ALBUMS.");
+  }
+  function play() {
+    wantPlay = true;
+    const p = audio.play();
+    if (p && p.catch) p.catch(function (err) {
+      if (!err || err.name === "AbortError") return;
+      if (err.name === "NotAllowedError") { wantPlay = false; switching = false; stopUI(); return; }
+      showError();
+    });
+  }
+  function loadTrack(i, autoplay) {
+    cur = (i + playlist.length) % playlist.length;
+    setNote("");
+    showTrack();
+    switching = !!autoplay && (switching || !audio.paused);
+    audio.src = playlist[cur].audio;
+    audio.load();
+    if (autoplay) play(); else { switching = false; wantPlay = false; }
+  }
+  function toggle() { if (audio.paused) play(); else audio.pause(); }
+
+
+  function isPlaying() { return switching || (!audio.paused && !audio.ended); }
+
+  function onAlbumClick(ai) {
+    if (playlist[cur].album === ai) return;
+    loadTrack(playlist.findIndex(function (t) { return t.album === ai; }), isPlaying());
+  }
+  playBtn.addEventListener("click", toggle);
+  nextBtn.addEventListener("click", function () { loadTrack(cur + 1, isPlaying()); });
+  prevBtn.addEventListener("click", function () {
+    if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+    loadTrack(cur - 1, isPlaying());
+  });
+
+ 
+  audio.addEventListener("play", function () {
+    deck.classList.add("is-arm-down");               
+    playBtn.classList.add("is-playing");
+    playBtn.setAttribute("aria-label", "Jeda");
+  });
+  audio.addEventListener("playing", function () {
+    setNote("");
+    switching = false;
+    deck.classList.add("is-spinning");             
+  });
+  function stopUnlessSwitching() {
+    if (switching || (audio.ended && cur < playlist.length - 1)) return;
+    stopUI();
+  }
+  audio.addEventListener("pause", stopUnlessSwitching);
+  audio.addEventListener("emptied", stopUnlessSwitching);
+  audio.addEventListener("ended", function () {
+    if (cur < playlist.length - 1) switching = true; else stopUI();
+    if (cur < playlist.length - 1) loadTrack(cur + 1, true);
+    else { audio.currentTime = 0; wantPlay = false; }
+  });
+  audio.addEventListener("error", function () { if (wantPlay) showError(); else stopUI(); });
+  function onDuration() {
+    const d = audio.duration;
+    if (!isFinite(d) || d <= 0) return;
+    seek.max = d; seek.disabled = false;
+    durEl.textContent = fmt(d);
+    updateSeekUI();
+  }
+  audio.addEventListener("loadedmetadata", onDuration);
+  audio.addEventListener("durationchange", onDuration);
+  audio.addEventListener("timeupdate", function () {
+    curEl.textContent = fmt(audio.currentTime);
+    if (!seeking) { seek.value = audio.currentTime; updateSeekUI(); }
+  });
+  seek.addEventListener("input", function () {
+    seeking = true;
+    curEl.textContent = fmt(parseFloat(seek.value));
+    updateSeekUI();
+    if (isFinite(audio.duration)) audio.currentTime = parseFloat(seek.value);
+  });
+  seek.addEventListener("change", function () { seeking = false; });
+
+
+  const K_MIN = -135, K_MAX = 135;
+  let rot = K_MIN + vol * (K_MAX - K_MIN);
+  let kDrag = null;
+
+  function applyVolume() {
+    vol = (rot - K_MIN) / (K_MAX - K_MIN);
+    audio.volume = Math.max(0, Math.min(1, vol));
+    knob.style.setProperty("--k", rot.toFixed(1) + "deg");
+    knob.setAttribute("aria-valuenow", String(Math.round(vol * 100)));
+  }
+  function pointerAngle(e) {
+    const r = knob.getBoundingClientRect();
+    return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+  }
+  knob.addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    e.preventDefault();
+    kDrag = { id: e.pointerId, last: pointerAngle(e) };
+    try { knob.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  knob.addEventListener("pointermove", function (e) {
+    if (!kDrag || e.pointerId !== kDrag.id) return;
+    const a = pointerAngle(e);
+    let d = a - kDrag.last;
+    if (d > 180) d -= 360; else if (d < -180) d += 360;
+    kDrag.last = a;
+    rot = Math.max(K_MIN, Math.min(K_MAX, rot + d));
+    applyVolume();
+  });
+  function knobEnd(e) { if (kDrag && e.pointerId === kDrag.id) kDrag = null; }
+  knob.addEventListener("pointerup", knobEnd);
+  knob.addEventListener("pointercancel", knobEnd);
+  knob.addEventListener("keydown", function (e) {
+    const step = (K_MAX - K_MIN) * 0.05;
+    let n = rot;
+    if (e.key === "ArrowUp" || e.key === "ArrowRight") n += step;
+    else if (e.key === "ArrowDown" || e.key === "ArrowLeft") n -= step;
+    else if (e.key === "Home") n = K_MIN;
+    else if (e.key === "End") n = K_MAX;
+    else return;
+    e.preventDefault(); e.stopPropagation();   
+    rot = Math.max(K_MIN, Math.min(K_MAX, n));
+    applyVolume();
+  });
+
+  applyVolume();
+  loadTrack(0, false);
 })();
